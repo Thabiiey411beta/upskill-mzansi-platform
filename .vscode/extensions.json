@@ -1,0 +1,14 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "stylelint.vscode-stylelint",
+    "bradlc.vscode-tailwindcss",
+    "esbenp.prettier-vscode",
+    "ms-vscode.vscode-typescript-vue",
+    "GitHub.copilot",
+    "ms-vscode-remote.remote-containers",
+    "eamodio.gitlens",
+    "formulahendry.auto-rename-tag",
+    "usernamehw.errorlens"
+  ]
+}
