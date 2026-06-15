@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { Search, Briefcase, Sparkles, GraduationCap, ArrowRight, TrendingUp, Users, Award } from 'lucide-react'
 import { Button, Card, CardContent, Input, Badge } from '@blinkdotnew/ui'
+import { cn } from '@/lib/utils'
 
 const stats = [
   { label: 'Active Jobs', value: '12,450+', icon: Briefcase, color: 'text-blue-500' },

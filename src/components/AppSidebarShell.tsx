@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import type { ReactNode } from 'react'
+import { NavLink } from 'react-router-dom'
 import {
   Avatar,
   AvatarFallback,
@@ -52,17 +53,17 @@ const RESOURCE_NAV_ITEMS: NavItemDef[] = [
 
 function NavItem({ item, collapsed }: { item: NavItemDef; collapsed: boolean }) {
   const link = (
-    <a
-      href={item.href}
-      className={cn(
-        'flex items-center gap-2.5 rounded-md text-sm transition-colors cursor-pointer group',
-        collapsed ? 'justify-center w-8 h-8 mx-auto' : 'px-3 py-2 w-full',
-        item.active
-          ? 'bg-accent text-foreground font-medium'
-          : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground'
-      )}
+    <NavLink
+      to={item.href}
+      className={({ isActive }) =>
+        cn(
+          'flex items-center gap-2.5 rounded-md text-sm transition-colors group',
+          collapsed ? 'justify-center w-8 h-8 mx-auto' : 'px-3 py-2 w-full',
+          isActive ? 'bg-accent text-foreground font-medium' : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground'
+        )
+      }
     >
-      <span className={cn('shrink-0 transition-transform group-hover:scale-110', item.active && 'text-primary')}>
+      <span className={cn('shrink-0 transition-transform group-hover:scale-110', 'text-current')}>
         {item.icon}
       </span>
       {!collapsed && (
@@ -75,7 +76,7 @@ function NavItem({ item, collapsed }: { item: NavItemDef; collapsed: boolean }) 
           )}
         </>
       )}
-    </a>
+    </NavLink>
   )
   if (!collapsed) return link
   return (

@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "setup:db": "tsx scripts/setup-db.ts",
     "scrape": "tsx scripts/scrape-jobs.ts",
     "scrape:dev": "tsx scripts/scrape-jobs.ts",
     "lint:css": "stylelint \"src/**/*.css\" --fix --quiet",
@@ -17,8 +18,9 @@
     "lint": "bun run lint:types && bun run lint:js && bun run lint:css && bun run check:css-vars && bun run check:css-classes"
   },
   "devDependencies": {
-    "typescript": "~6.0.2",
+    "dotenv": "^17.4.2",
     "tsx": "^4.7.0",
+    "typescript": "~6.0.2",
     "vite": "8.0.14"
   },
   "dependencies": {
@@ -42,6 +44,7 @@
     "react-hook-form": "^7.77.0",
     "react-hot-toast": "^2.6.0",
     "react-responsive": "^10.0.1",
+    "react-router-dom": "^6.30.4",
     "recharts": "^3.8.1",
     "sonner": "^1.2.0",
     "stylelint": "^17.12.0",

@@ -10,6 +10,8 @@
  * Usage: npm run scrape
  */
 
+import 'dotenv/config'
+import * as dotenv from 'dotenv'
 import { createClient } from '@supabase/supabase-js'
 import * as fs from 'fs'
 import * as path from 'path'
@@ -18,6 +20,9 @@ import { fileURLToPath } from 'url'
 // Get __dirname in ES modules
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
+
+// Load .env.local explicitly
+dotenv.config({ path: path.resolve(__dirname, '../.env.local') })
 
 // Environment variables
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL
@@ -249,6 +254,19 @@ async function upsertJobs(jobs: any[]) {
   }
 }
 
+async function ensureJobsTableExists() {
+  const { error } = await supabase
+    .from('jobs')
+    .select('id', { count: 'exact', head: true })
+    .limit(0)
+
+  if (error) {
+    throw new Error(
+      `The Supabase table "jobs" is missing or inaccessible. ${error.message}`
+    )
+  }
+}
+
 /**
  * Main scraping function
  */
@@ -261,14 +279,14 @@ async function scrapeJobs() {
     const jobs = await loadJobsData()
     console.log(`✅ Loaded ${jobs.length} jobs\n`)
 
+    // Step 1.5: Verify the jobs table exists before upsert
+    await ensureJobsTableExists()
+    console.log('🔎 Verified jobs table exists in Supabase\n')
+
     // Step 2: Upsert to Supabase
     await upsertJobs(jobs)
 
     console.log('\n✨ Job scraping completed successfully!')
-    console.log(`\nTo create the jobs table in Supabase, run this SQL in the SQL Editor:`)
-    console.log('---')
-    console.log(CREATE_JOBS_TABLE_SQL)
-    console.log('---\n')
   } catch (error) {
     console.error('\n❌ Job scraping failed:', error)
     console.error('\nPlease ensure:')

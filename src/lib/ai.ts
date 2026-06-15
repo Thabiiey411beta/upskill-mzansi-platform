@@ -1,3 +1,5 @@
+import type { GapAnalysis, Job, Profile } from '@/types'
+
 export const CV_PARSING_PROMPT = `You are an expert CV/resume parser for South African job seekers.
 
 Extract all key information from the following CV text and return it as clean, structured JSON.
@@ -49,18 +51,19 @@ Job:
 {{JOB_DESCRIPTION}}
 `
 
-// Stub helper to call an Edge Function (to be implemented)
 export async function callAiEdge(endpoint: string, payload: any) {
   const res = await fetch(`/api/ai/${endpoint}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   })
+
+  if (!res.ok) {
+    throw new Error(`AI edge call failed: ${res.status}`)
+  }
+
   return res.json()
 }
-
-export default { CV_PARSING_PROMPT, COVER_LETTER_PROMPT, SKILLS_GAP_PROMPT }
-import type { GapAnalysis, Job, Profile } from '@/types'
 
 const setaAlignments: Record<string, { name: string; link: string }> = {
   'IT & Tech': { name: 'MICT SETA', link: 'https://www.mict.org.za' },
@@ -72,7 +75,7 @@ const setaAlignments: Record<string, { name: string; link: string }> = {
   'Retail & FMCG': { name: 'SETA Retail', link: 'https://www.faset.org.za' },
   'Construction & Engineering': { name: 'CETA', link: 'https://www.ceta.org.za' },
   'Government & Public Sector': { name: 'PSETA', link: 'https://www.pseta.org.za' },
-  Agriculture: { name: 'AgriSETA', link: 'https://www.agriseta.co.za' },
+  Agriculture: { name: 'AgriSETA', link: 'https://www.agriseta.org.za' },
 }
 
 const quickFunding = [
@@ -89,7 +92,7 @@ const scoreMatch = (profile: Profile, job: Job) => {
   const profileKeywords = new Set(profile.skills.map(sanitize))
   const matchCount = job.requirements.reduce((count, requirement) => {
     const words = requirement.split(/[^a-zA-Z0-9]+/).map(sanitize)
-    return count + (words.some(word => profileKeywords.has(word)) ? 1 : 0)
+    return count + (words.some((word) => profileKeywords.has(word)) ? 1 : 0)
   }, 0)
   return Math.round((matchCount / Math.max(job.requirements.length, 1)) * 100)
 }
@@ -105,30 +108,30 @@ export function generateCoverLetter(job: Job, profile: Profile) {
 My background includes ${topSkills}. I am confident these strengths will help me contribute to ${job.company} by supporting ${job.responsibilities[0].toLowerCase()} and delivering strong results across ${job.requirements[0].toLowerCase()}. I am particularly drawn to this role because of the opportunity to grow within a South African company that values skills development, quality delivery and SETA-aligned learning.
 
 Thank you for considering my application. I look forward to the opportunity to discuss how I can support ${job.company} in this role.`
-}`
+}
 
 export function analyzeSkillsGap(job: Job, profile: Profile): GapAnalysis {
   const profileSkills = profile.skills.map(sanitize)
-  const strongMatches = job.requirements.filter(req =>
+  const strongMatches = job.requirements.filter((req) =>
     req
       .split(/[^a-zA-Z0-9]+/)
       .map(sanitize)
-      .some(word => profileSkills.includes(word)),
+      .some((word) => profileSkills.includes(word)),
   )
 
   const skillGaps = job.requirements
-    .map(req => {
+    .map((req) => {
       const keywords = req
         .split(/[^a-zA-Z0-9]+/)
         .map(sanitize)
         .filter(Boolean)
-      const hasMatch = keywords.some(word => profileSkills.includes(word))
+      const hasMatch = keywords.some((word) => profileSkills.includes(word))
       return { req, hasMatch }
     })
-    .filter(item => !item.hasMatch)
+    .filter((item) => !item.hasMatch)
     .slice(0, 4)
-    .map(item => {
-      const keyword = item.req.split(/[^a-zA-Z0-9]+/).find(word => word.length > 4) || item.req
+    .map((item) => {
+      const keyword = item.req.split(/[^a-zA-Z0-9]+/).find((word) => word.length > 4) || item.req
       const sector = setaAlignments[job.sector]?.name || 'SETA'
       const setaLink = setaAlignments[job.sector]?.link || 'https://www.saqa.org.za'
       return {
@@ -190,14 +193,18 @@ export function parseCvNameToProfile(fileName: string): Partial<Profile> {
 
 export function assistantResponse(message: string, profile: Profile) {
   const normalized = message.trim().toLowerCase()
+
   if (normalized.includes('recommend') || normalized.includes('job')) {
     return `Based on your profile and preferred province, I recommend checking roles in ${profile.provincePreference || 'Gauteng or Western Cape'} that focus on ${profile.skills.slice(0, 3).join(', ') || 'transferable workplace skills'}. Keep your CV strong, highlight learning achievements, and use the cover letter template for each application.`
   }
+
   if (normalized.includes('upskill') || normalized.includes('learnership') || normalized.includes('seta')) {
     return `For a stronger profile, pursue a SETA-aligned short course or learnership in ${profile.headline || 'your target sector'}. Use the official SETA links in Resources and build evidence of practical experience through volunteer or contract work.`
   }
+
   if (normalized.includes('interview')) {
     return 'Prepare for interviews by sharing clear examples of how you solved a problem, worked with a team, or improved a process. Practice a strong opening and ask the employer about their culture and development support.'
   }
+
   return 'I can help you find matching jobs, generate a tailored cover letter, and recommend learnerships. Ask me for job recommendations, skills advice, or application tips.'
 }
