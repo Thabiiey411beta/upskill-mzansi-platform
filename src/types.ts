@@ -85,6 +85,19 @@ export interface Profile {
   languages: string[]
 }
 
+// Company size bands used in the business_profiles table
+export type CompanySize = '1-10' | '11-50' | '51-200' | '201-500' | '500+'
+
+export interface BusinessProfile {
+  id: string                  // mirrors auth.users.id
+  company_name: string
+  registration_number: string | null  // CIPC format: YYYY/NNNNNN/NN
+  industry: string | null
+  size: CompanySize | null
+  credits_balance: number     // purchased credits for AI tools / job posts
+  created_at: string
+}
+
 export interface GapAnalysis {
   overallMatchScore: number
   strongMatches: string[]

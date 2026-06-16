@@ -3,6 +3,7 @@
  * Do not wrap individual pages in Shell or duplicate sidebars/top bars.
  */
 import React, { createContext, useContext } from 'react'
+import { Outlet } from 'react-router-dom'
 import { Shell } from '../Shell'
 import { AppSidebarShell } from '../components/AppSidebarShell'
 
@@ -25,13 +26,11 @@ export type SharedAppLayoutProps = {
   appName?: string
   /** Override default sidebar; keep same flex structure as AppSidebarShell */
   sidebar?: React.ReactNode
-  children: React.ReactNode
 }
 
 export function SharedAppLayout({
-  appName = 'App',
+  appName = 'Upskill Mzansi',
   sidebar = <AppSidebarShell />,
-  children,
 }: SharedAppLayoutProps) {
   const value = React.useMemo(() => ({ appName }), [appName])
 
@@ -39,7 +38,7 @@ export function SharedAppLayout({
     <SharedLayoutContext.Provider value={value}>
       <div className="flex min-h-dvh w-full flex-1 flex-col">
         <Shell appName={appName} sidebar={sidebar}>
-          {children}
+          <Outlet />
         </Shell>
       </div>
     </SharedLayoutContext.Provider>

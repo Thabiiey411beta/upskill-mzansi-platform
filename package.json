@@ -10,6 +10,7 @@
     "setup:db": "tsx scripts/setup-db.ts",
     "scrape": "tsx scripts/scrape-jobs.ts",
     "scrape:dev": "tsx scripts/scrape-jobs.ts",
+    "marketing:post": "tsx scripts/generate-marketing-post.ts",
     "lint:css": "stylelint \"src/**/*.css\" --fix --quiet",
     "lint:js": "eslint . --ext ts,tsx --report-unused-disable-directives",
     "lint:types": "tsc --noEmit",
