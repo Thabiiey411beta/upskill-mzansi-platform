@@ -5,6 +5,9 @@ import JobsPage from './pages/JobsPage';
 import Profile from './pages/Profile';
 import Upskilling from './pages/Upskilling';
 import BusinessSolutions from './pages/BusinessSolutions';
+import PricingPage from './pages/PricingPage';
+import Applications from './pages/Applications';
+import SavedJobs from './pages/SavedJobs';
 
 export default function App() {
   return (
@@ -17,6 +20,9 @@ export default function App() {
           <Route path="upskilling" element={<Upskilling />} />
           <Route path="profile" element={<Profile />} />
           <Route path="business" element={<BusinessSolutions />} />
+          <Route path="pricing" element={<PricingPage />} />
+          <Route path="applications" element={<Applications />} />
+          <Route path="saved" element={<SavedJobs />} />
           {/* Catch missing route endpoints safely */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>

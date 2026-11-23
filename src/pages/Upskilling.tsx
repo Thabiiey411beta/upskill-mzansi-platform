@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { courses } from '../data/courses';
+import { provinces, sectors } from '../data/jobs';
 import { Search, Filter, Award } from 'lucide-react';
 
 const Upskilling = () => {
@@ -37,8 +38,42 @@ const Upskilling = () => {
               />
             </div>
           </div>
-          {/* More filters for sector, province, etc. */}
+          {/* Sector + province filters (state existed but had no controls) */}
+          <div className="flex gap-4">
+            <label className="flex items-center gap-2 text-sm text-gray-600">
+              <Filter className="w-4 h-4 text-gray-400" />
+              <select
+                value={selectedSector}
+                onChange={(e) => setSelectedSector(e.target.value)}
+                className="py-3 px-3 border border-gray-200 rounded-xl bg-white"
+                aria-label="Filter by sector"
+              >
+                <option value="All">All sectors</option>
+                {sectors.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+            </label>
+            <select
+              value={selectedProvince}
+              onChange={(e) => setSelectedProvince(e.target.value)}
+              className="py-3 px-3 border border-gray-200 rounded-xl bg-white"
+              aria-label="Filter by province"
+            >
+              <option value="All">All provinces</option>
+              {provinces.map((p) => (
+                <option key={p} value={p}>{p}</option>
+              ))}
+            </select>
+          </div>
         </div>
+
+        {filteredCourses.length === 0 && (
+          <p className="rounded-2xl bg-white p-6 text-center text-sm text-gray-600 shadow-sm">
+            No courses match those filters yet — only {courses.length} launch courses are listed so far.
+            More SETA-aligned programmes are added as providers confirm them.
+          </p>
+        )}
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredCourses.map(course => (

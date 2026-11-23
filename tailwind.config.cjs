@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+const defaultColors = require('tailwindcss/colors')
+
 module.exports = {
   darkMode: ["class"],
   content: [
@@ -49,6 +51,12 @@ module.exports = {
 
       // ── Colors ─────────────────────────────────────────────────────────────
       colors: {
+        // Legacy brand colours used by Profile / Upskilling / CoverLetterModal
+        // (bg-navy, bg-orange, text-orange). They were referenced but never
+        // defined, so those buttons rendered unstyled. Navy matches the
+        // Business page's NAVY constant (#0A2540).
+        navy: '#0A2540',
+        orange: { ...defaultColors.orange, DEFAULT: '#EA580C' },
         border:     'hsl(var(--border))',
         input:      'hsl(var(--input))',
         ring:       'hsl(var(--ring))',

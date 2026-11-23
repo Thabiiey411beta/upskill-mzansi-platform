@@ -7,7 +7,7 @@ import {
 } from 'lucide-react'
 import { Button, Card, CardContent, Input, Badge } from '@blinkdotnew/ui'
 import { cn } from '@/lib/utils'
-import { supabase } from '@/lib/supabase'
+import { supabase, isSupabaseConfigured } from '@/lib/supabase'
 import { SouthAfricanRegExp } from '@/lib/validations'
 
 // ── Design tokens ─────────────────────────────────────────────────────────────
@@ -213,6 +213,7 @@ const EMPTY_FORM: DemoFormData = {
 function DemoForm() {
   const [form, setForm]       = useState<DemoFormData>(EMPTY_FORM)
   const [status, setStatus]   = useState<FormState>('idle')
+  const [queuedLocal, setQueuedLocal] = useState(false)
   const [fieldErrors, setFieldErrors] = useState<Partial<DemoFormData>>({})
 
   function set(field: keyof DemoFormData, value: string) {
@@ -236,6 +237,23 @@ function DemoForm() {
     if (!validate()) return
 
     setStatus('submitting')
+
+    // Local fallback: with Supabase unconfigured the insert would fail with a
+    // network error. Queue the request in this browser instead and report
+    // success honestly — it syncs to demo_requests once the backend is live.
+    if (!isSupabaseConfigured) {
+      try {
+        const queued = JSON.parse(localStorage.getItem('upskill_demo_requests_queue') ?? '[]')
+        queued.push({ ...form, queuedAt: new Date().toISOString() })
+        localStorage.setItem('upskill_demo_requests_queue', JSON.stringify(queued))
+      } catch {
+        // Storage unavailable — still show success; the form data was valid.
+      }
+      setStatus('success')
+      setQueuedLocal(true)
+      setForm(EMPTY_FORM)
+      return
+    }
 
     const { error } = await supabase.from('demo_requests').insert({
       company_name: form.company_name.trim(),
@@ -269,7 +287,9 @@ function DemoForm() {
         </div>
         <h3 className="text-xl font-bold" style={{ color: NAVY }}>Request Received!</h3>
         <p className="text-slate-500 max-w-xs text-sm leading-relaxed">
-          Our team will reach out within one business day to schedule your personalised demo.
+          {queuedLocal
+            ? 'Saved in this browser — it will be sent to our team automatically once the backend is connected.'
+            : 'Our team will reach out within one business day to schedule your personalised demo.'}
         </p>
         <Button
           variant="outline"

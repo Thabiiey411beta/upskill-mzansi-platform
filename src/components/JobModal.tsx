@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import type { Job } from '@/types'
-import { isJobSaved, toggleSavedJob } from '@/lib/storage'
+import { isJobSaved, toggleSavedJob, hasApplied, recordApplication } from '@/lib/storage'
+import CoverLetterModal from './CoverLetterModal'
 
 interface Props {
   job: Job | null
@@ -9,11 +10,20 @@ interface Props {
 
 export const JobModal: React.FC<Props> = ({ job, onClose }) => {
   const [saved, setSaved] = useState(false)
+  const [applied, setApplied] = useState(false)
+  const [showCoverLetter, setShowCoverLetter] = useState(false)
   if (!job) return null
 
   function handleToggleSave() {
     toggleSavedJob(job.id)
     setSaved(isJobSaved(job.id))
+  }
+
+  function handleApply() {
+    // Local-only for now: no backend application endpoint exists yet.
+    // Recorded in this browser and listed on /applications.
+    recordApplication(job)
+    setApplied(true)
   }
 
   return (
@@ -65,11 +75,29 @@ export const JobModal: React.FC<Props> = ({ job, onClose }) => {
           </div>
         </section>
 
-        <footer className="mt-6 flex justify-end gap-3">
-          <button className="px-4 py-2 rounded border" onClick={onClose}>Close</button>
-          <button className="px-4 py-2 rounded border" onClick={handleToggleSave}>{isJobSaved(job.id) || saved ? 'Unsave' : 'Save'}</button>
-          <button className="px-4 py-2 rounded bg-blue-600 text-white">Apply Now</button>
+        <footer className="mt-6 flex flex-col gap-3">
+          {(applied || hasApplied(job.id)) && (
+            <p className="rounded-xl bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-800">
+              Application noted — saved in this browser and listed under My Applications.
+              (Employer submission opens once accounts are live.)
+            </p>
+          )}
+          <div className="flex justify-end gap-3">
+            <button className="px-4 py-2 rounded border" onClick={onClose}>Close</button>
+            <button className="px-4 py-2 rounded border" onClick={handleToggleSave}>{isJobSaved(job.id) || saved ? 'Unsave' : 'Save'}</button>
+            <button className="px-4 py-2 rounded border border-amber-300 bg-amber-50 text-amber-800" onClick={() => setShowCoverLetter(true)}>
+              AI Cover Letter
+            </button>
+            <button
+              className="px-4 py-2 rounded bg-blue-600 text-white disabled:opacity-50"
+              onClick={handleApply}
+              disabled={applied || hasApplied(job.id)}
+            >
+              {applied || hasApplied(job.id) ? 'Applied ✓' : 'Apply Now'}
+            </button>
+          </div>
         </footer>
+        {showCoverLetter && <CoverLetterModal job={job} onClose={() => setShowCoverLetter(false)} />}
       </div>
     </div>
   )

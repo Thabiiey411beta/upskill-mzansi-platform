@@ -25,7 +25,10 @@ export type ApplicationStatus = 'applied' | 'reviewing' | 'shortlisted' | 'rejec
 export type Province =
   | 'Gauteng' | 'Western Cape' | 'KwaZulu-Natal' | 'Eastern Cape'
   | 'Free State' | 'Limpopo' | 'Mpumalanga' | 'North West' | 'Northern Cape' | 'Remote'
-export type CompanySize     = '1-10' | '11-50' | '51-200' | '201+'
+export type CompanySize     = '1-10' | '11-50' | '51-200' | '201-500' | '500+'
+// NOTE: keep in sync with CompanySize in src/types.ts. The DB has no CHECK
+// constraint on business_profiles.size, so these two literals are the only
+// contract — src/lib/validations.ts still lists the older '201+' band.
 export type ContentPlatform = 'facebook' | 'twitter' | 'linkedin' | 'instagram'
 export type ContentStatus   = 'draft' | 'approved' | 'published'
 export type MessageStatus   = 'replied' | 'gemini_error' | 'send_error' | 'skipped'
@@ -59,6 +62,7 @@ export interface Database {
           updated_at?:  string
         }
         Update: Partial<Database['public']['Tables']['profiles']['Insert']>
+        Relationships: []
       }
 
       // ── jobs ─────────────────────────────────────────────────────────────────
@@ -84,6 +88,7 @@ export interface Database {
         Insert: Omit<Database['public']['Tables']['jobs']['Row'], 'id' | 'created_at'>
           & { id?: string; created_at?: string }
         Update: Partial<Database['public']['Tables']['jobs']['Insert']>
+        Relationships: []
       }
 
       // ── applications ─────────────────────────────────────────────────────────
@@ -100,6 +105,7 @@ export interface Database {
         Insert: Omit<Database['public']['Tables']['applications']['Row'], 'id' | 'created_at'>
           & { id?: string; created_at?: string }
         Update: Partial<Database['public']['Tables']['applications']['Insert']>
+        Relationships: []
       }
 
       // ── business_profiles ────────────────────────────────────────────────────
@@ -113,9 +119,10 @@ export interface Database {
           credits_balance:     number
           created_at:          string
         }
-        Insert: Omit<Database['public']['Tables']['business_profiles']['Row'], 'created_at'>
-          & { created_at?: string }
+        Insert: Omit<Database['public']['Tables']['business_profiles']['Row'], 'created_at' | 'credits_balance'>
+          & { created_at?: string; credits_balance?: number }
         Update: Partial<Database['public']['Tables']['business_profiles']['Insert']>
+        Relationships: []
       }
 
       // ── marketing_content ────────────────────────────────────────────────────
@@ -132,6 +139,7 @@ export interface Database {
         Insert: Omit<Database['public']['Tables']['marketing_content']['Row'], 'id' | 'created_at'>
           & { id?: string; created_at?: string }
         Update: Partial<Database['public']['Tables']['marketing_content']['Insert']>
+        Relationships: []
       }
 
       // ── whatsapp_messages ────────────────────────────────────────────────────
@@ -148,6 +156,7 @@ export interface Database {
         Insert: Omit<Database['public']['Tables']['whatsapp_messages']['Row'], 'id' | 'created_at'>
           & { id?: string; created_at?: string }
         Update: Partial<Database['public']['Tables']['whatsapp_messages']['Insert']>
+        Relationships: []
       }
 
       // ── demo_requests ────────────────────────────────────────────────────────
@@ -166,8 +175,16 @@ export interface Database {
         Insert: Omit<Database['public']['Tables']['demo_requests']['Row'], 'id' | 'created_at'>
           & { id?: string; created_at?: string }
         Update: Partial<Database['public']['Tables']['demo_requests']['Insert']>
+        Relationships: []
       }
 
+    }
+
+    // No database views exist yet. Required by @supabase/supabase-js >= 2.39:
+    // without `Views`, the schema fails the GenericSchema constraint and
+    // `.from()` / `.rpc()` resolve to `never`, breaking every typed query.
+    Views: {
+      [_ in never]: never
     }
 
     Functions: {

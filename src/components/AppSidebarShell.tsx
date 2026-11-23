@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
 import type { ReactNode } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, Link } from 'react-router-dom'
 import {
   Avatar,
   AvatarFallback,
@@ -13,17 +13,18 @@ import {
 import {
   Home,
   Briefcase,
-  Sparkles,
+  Gem,
   ClipboardList,
   Bookmark,
   GraduationCap,
   Building2,
-  Settings,
+  User,
   LogOut,
   PanelLeft,
   Search,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useAuth } from '@/contexts/AuthContext'
 
 const SIDEBAR_KEY = 'sidebar_collapsed'
 
@@ -35,20 +36,24 @@ interface NavItemDef {
   badge?: string
 }
 
+// NOTE: every href here must be a real route in src/App.tsx. Dead links
+// (/ai-hub, /companies, /settings) used to silently redirect home via the
+// catch-all route — they were removed 2026-11-23.
 const MAIN_NAV_ITEMS: NavItemDef[] = [
   { href: '/', icon: <Home className="h-4 w-4" />, label: 'Home' },
   { href: '/jobs', icon: <Search className="h-4 w-4" />, label: 'Find Jobs' },
-  { href: '/ai-hub', icon: <Sparkles className="h-4 w-4" />, label: 'AI Career Hub', badge: 'New' },
+  { href: '/pricing', icon: <Gem className="h-4 w-4" />, label: 'Pricing', badge: 'R49' },
 ]
 
 const USER_NAV_ITEMS: NavItemDef[] = [
   { href: '/applications', icon: <ClipboardList className="h-4 w-4" />, label: 'My Applications' },
   { href: '/saved', icon: <Bookmark className="h-4 w-4" />, label: 'Saved Jobs' },
+  { href: '/profile', icon: <User className="h-4 w-4" />, label: 'My Profile' },
 ]
 
 const RESOURCE_NAV_ITEMS: NavItemDef[] = [
   { href: '/upskilling', icon: <GraduationCap className="h-4 w-4" />, label: 'Upskilling Hub' },
-  { href: '/companies', icon: <Building2 className="h-4 w-4" />, label: 'Companies' },
+  { href: '/business', icon: <Building2 className="h-4 w-4" />, label: 'For Business' },
 ]
 
 function NavItem({ item, collapsed }: { item: NavItemDef; collapsed: boolean }) {
@@ -91,6 +96,7 @@ function NavItem({ item, collapsed }: { item: NavItemDef; collapsed: boolean }) 
 }
 
 export function AppSidebarShell() {
+  const { user, logout } = useAuth()
   const [collapsed, setCollapsed] = useState(() => {
     if (typeof window === 'undefined') return false
     return localStorage.getItem(SIDEBAR_KEY) === 'true'
@@ -174,20 +180,22 @@ export function AppSidebarShell() {
 
         {/* ── Footer ────────────────────────────────────── */}
         <div className={cn('shrink-0 border-t border-border p-3 space-y-2', collapsed && 'items-center')}>
-          <NavItem item={{ href: '/settings', icon: <Settings className="h-4 w-4" />, label: 'Settings' }} collapsed={collapsed} />
-          
           <div className={cn('pt-2 flex items-center gap-3', collapsed ? 'flex-col' : 'px-3 py-2 rounded-xl bg-muted/30')}>
             <Avatar className="h-8 w-8 border-2 border-background ring-1 ring-border shrink-0">
-              <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold font-heading">TZ</AvatarFallback>
+              <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold font-heading">
+                {user ? user.name[0] : 'G'}
+              </AvatarFallback>
             </Avatar>
             {!collapsed && (
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-bold truncate">Thabiso Zondo</p>
-                <p className="text-[10px] text-muted-foreground truncate">Free Plan</p>
+                <p className="text-xs font-bold truncate">{user ? user.name : 'Guest'}</p>
+                <Link to="/pricing" className="text-[10px] text-muted-foreground truncate hover:text-primary">
+                  Free plan — see Premium
+                </Link>
               </div>
             )}
-            {!collapsed && (
-               <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive transition-colors">
+            {!collapsed && user && (
+               <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive transition-colors" onClick={logout}>
                   <LogOut className="h-4 w-4" />
                </Button>
             )}

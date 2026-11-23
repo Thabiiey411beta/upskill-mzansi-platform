@@ -1,25 +1,51 @@
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Search, Briefcase, Sparkles, GraduationCap, ArrowRight, TrendingUp, Users, Award } from 'lucide-react'
 import { Button, Card, CardContent, Input, Badge } from '@blinkdotnew/ui'
 import { cn } from '@/lib/utils'
+import { jobs } from '@/data/jobs'
+import { courses } from '@/data/courses'
+import { formatCurrencyZAR } from '@/lib/jobUtils'
+
+// NOTE — honest numbers only. This page used to show invented traction
+// ("12,450+ jobs", "45,000+ users"). Every figure below is derived from the
+// real seed data in src/data/jobs.ts and src/data/courses.ts, so the counts
+// grow automatically as the catalogue grows. Do not hard-code traction
+// figures here until they come from a real backend count.
+const sectorCounts = (sector: string) => jobs.filter((j) => j.sector === sector).length
+const provinceCount = new Set(jobs.map((j) => j.province)).size
 
 const stats = [
-  { label: 'Active Jobs', value: '12,450+', icon: Briefcase, color: 'text-blue-500' },
-  { label: 'Registered Users', value: '45,000+', icon: Users, color: 'text-green-500' },
-  { label: 'AI Parsed CVs', value: '28,000+', icon: Sparkles, color: 'text-orange-500' },
-  { label: 'SETA Partners', value: '15+', icon: Award, color: 'text-purple-500' },
+  { label: 'Curated Jobs', value: String(jobs.length), icon: Briefcase, color: 'text-blue-500' },
+  { label: 'Provinces Covered', value: String(provinceCount), icon: Users, color: 'text-green-500' },
+  { label: 'SETA-Aligned Courses', value: String(courses.length), icon: Sparkles, color: 'text-orange-500' },
+  { label: 'Sectors', value: String(new Set(jobs.map((j) => j.sector)).size), icon: Award, color: 'text-purple-500' },
 ]
 
 const categories = [
-  { name: 'IT & Tech', count: '1,200+', icon: '💻' },
-  { name: 'Finance', count: '850+', icon: '💰' },
-  { name: 'Healthcare', count: '640+', icon: '🏥' },
-  { name: 'Mining', count: '420+', icon: '⛏️' },
-  { name: 'Manufacturing', count: '510+', icon: '🏭' },
-  { name: 'Education', count: '380+', icon: '🎓' },
+  { name: 'IT & Tech', icon: '💻' },
+  { name: 'Finance & Banking', icon: '💰' },
+  { name: 'Healthcare', icon: '🏥' },
+  { name: 'Mining & Resources', icon: '⛏️' },
+  { name: 'Manufacturing', icon: '🏭' },
+  { name: 'Education', icon: '🎓' },
 ]
 
 export function HomePage() {
+  const navigate = useNavigate()
+  const [query, setQuery] = useState('')
+  const [location, setLocation] = useState('')
+  const featured = jobs.slice(0, 6)
+  const techJobs = sectorCounts('IT & Tech')
+
+  const runSearch = () => {
+    const params = new URLSearchParams()
+    if (query.trim()) params.set('q', query.trim())
+    if (location.trim()) params.set('province', location.trim())
+    navigate(`/jobs?${params.toString()}`)
+  }
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* ── Hero Section ──────────────────────────────── */}
@@ -51,6 +77,9 @@ export function HomePage() {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
               <Input
                 placeholder="Job title, skills, or keywords"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') runSearch() }}
                 className="pl-12 h-14 md:h-16 border-none bg-transparent text-lg focus-visible:ring-0 placeholder:text-muted-foreground/60"
               />
             </div>
@@ -58,10 +87,13 @@ export function HomePage() {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors rotate-90" />
               <Input
                 placeholder="Location (e.g. Gauteng)"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') runSearch() }}
                 className="pl-12 h-14 md:h-16 border-none bg-transparent text-lg focus-visible:ring-0 placeholder:text-muted-foreground/60"
               />
             </div>
-            <Button className="h-14 md:h-16 px-10 rounded-xl md:rounded-2xl text-lg font-bold shadow-xl shadow-primary/20 gap-2 shrink-0">
+            <Button onClick={runSearch} className="h-14 md:h-16 px-10 rounded-xl md:rounded-2xl text-lg font-bold shadow-xl shadow-primary/20 gap-2 shrink-0">
               Search Jobs
             </Button>
           </motion.div>
@@ -69,7 +101,7 @@ export function HomePage() {
           <div className="mt-8 flex flex-wrap justify-center gap-3">
              <span className="text-sm font-medium text-muted-foreground">Popular:</span>
              {['Remote', 'Learnership', 'Admin', 'Internship', 'Retail'].map(tag => (
-               <button key={tag} className="text-sm font-semibold hover:text-primary transition-colors">
+               <button key={tag} onClick={() => navigate(`/jobs?q=${encodeURIComponent(tag)}`)} className="text-sm font-semibold hover:text-primary transition-colors">
                  {tag}
                </button>
              ))}
@@ -98,6 +130,9 @@ export function HomePage() {
               </motion.div>
             ))}
           </div>
+          <p className="text-center text-xs text-muted-foreground mt-6">
+            Launch catalogue — curated seed roles and courses. Counts update as employers post live roles.
+          </p>
         </div>
       </section>
 
@@ -109,8 +144,8 @@ export function HomePage() {
               <h2 className="text-3xl font-heading font-extrabold mb-2">Browse by Sector</h2>
               <p className="text-muted-foreground">Find opportunities in the industries driving South Africa's growth.</p>
             </div>
-            <Button variant="outline" className="gap-2 font-bold group">
-              View All Sectors <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            <Button variant="outline" className="gap-2 font-bold group" asChild>
+              <Link to="/jobs">View All Sectors <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" /></Link>
             </Button>
           </div>
 
@@ -123,13 +158,15 @@ export function HomePage() {
                 transition={{ delay: i * 0.05 }}
                 viewport={{ once: true }}
               >
-                <Card className="hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer border-border/50 group overflow-hidden">
-                  <CardContent className="p-6 text-center">
-                    <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">{cat.icon}</div>
-                    <h3 className="font-bold text-sm mb-1">{cat.name}</h3>
-                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{cat.count} Jobs</p>
-                  </CardContent>
-                </Card>
+                <Link to={`/jobs?sector=${encodeURIComponent(cat.name)}`}>
+                  <Card className="hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer border-border/50 group overflow-hidden">
+                    <CardContent className="p-6 text-center">
+                      <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">{cat.icon}</div>
+                      <h3 className="font-bold text-sm mb-1">{cat.name}</h3>
+                      <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{sectorCounts(cat.name)} Jobs</p>
+                    </CardContent>
+                  </Card>
+                </Link>
               </motion.div>
             ))}
           </div>
@@ -151,11 +188,11 @@ export function HomePage() {
               Upload your CV and let our AI analyze your profile against current market demands. Receive a personalized upskilling plan including learnerships and funding guidance.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold px-8 h-14 rounded-xl gap-2 shadow-xl shadow-black/20">
-                <Sparkles className="h-5 w-5" /> Start AI Skills Audit
+              <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold px-8 h-14 rounded-xl gap-2 shadow-xl shadow-black/20" asChild>
+                <Link to="/pricing"><Sparkles className="h-5 w-5" /> Start AI Skills Audit</Link>
               </Button>
-              <Button size="lg" variant="outline" className="border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/10 font-bold px-8 h-14 rounded-xl gap-2">
-                <GraduationCap className="h-5 w-5" /> Explore Learnerships
+              <Button size="lg" variant="outline" className="border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/10 font-bold px-8 h-14 rounded-xl gap-2" asChild>
+                <Link to="/upskilling"><GraduationCap className="h-5 w-5" /> Explore Learnerships</Link>
               </Button>
             </div>
           </div>
@@ -172,13 +209,16 @@ export function HomePage() {
                   <TrendingUp className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-primary-foreground/50 uppercase tracking-widest">Market Demand</p>
-                  <p className="text-sm font-bold text-primary-foreground">+14% Tech Jobs in Cape Town</p>
+                  <p className="text-xs font-bold text-primary-foreground/50 uppercase tracking-widest">In the catalogue now</p>
+                  <p className="text-sm font-bold text-primary-foreground">{techJobs} IT &amp; Tech roles across {provinceCount} provinces</p>
                 </div>
               </div>
               <div className="space-y-4">
-                 {[1, 2, 3].map(i => (
-                   <div key={i} className="h-12 rounded-xl bg-primary-foreground/5 border border-primary-foreground/10 animate-pulse" />
+                 {featured.slice(0, 3).map((job) => (
+                   <div key={job.id} className="rounded-xl bg-primary-foreground/5 border border-primary-foreground/10 px-4 py-3">
+                     <p className="text-sm font-bold text-primary-foreground">{job.title}</p>
+                     <p className="text-xs text-primary-foreground/60">{job.company} · {job.location}</p>
+                   </div>
                  ))}
               </div>
             </motion.div>
@@ -195,25 +235,25 @@ export function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            {[1, 2, 3, 4, 5, 6].map(i => (
-              <Card key={i} className="group hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border-none bg-card shadow-lg shadow-black/5 rounded-3xl overflow-hidden">
+            {featured.map((job) => (
+              <Card key={job.id} className="group hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border-none bg-card shadow-lg shadow-black/5 rounded-3xl overflow-hidden">
                 <CardContent className="p-8">
                   <div className="flex justify-between items-start mb-6">
                     <div className="h-14 w-14 rounded-2xl bg-muted flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
                       🏦
                     </div>
                     <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300 font-bold px-3 py-1 rounded-lg">
-                      Full-time
+                      {job.type}
                     </Badge>
                   </div>
-                  <h3 className="text-xl font-heading font-bold mb-2 group-hover:text-primary transition-colors">Senior Software Engineer</h3>
-                  <p className="text-sm font-bold text-muted-foreground mb-6">Standard Bank · Johannesburg</p>
+                  <h3 className="text-xl font-heading font-bold mb-2 group-hover:text-primary transition-colors">{job.title}</h3>
+                  <p className="text-sm font-bold text-muted-foreground mb-6">{job.company} · {job.location}</p>
                   <div className="flex items-center gap-2 mb-8">
-                    <span className="text-lg font-bold text-primary">R85,000</span>
-                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">/ Month</span>
+                    <span className="text-lg font-bold text-primary">{formatCurrencyZAR(job.annualSalary)}</span>
+                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">/ Year</span>
                   </div>
-                  <Button className="w-full h-12 rounded-xl font-bold group">
-                    View Details <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  <Button className="w-full h-12 rounded-xl font-bold group" asChild>
+                    <Link to="/jobs">View Details <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" /></Link>
                   </Button>
                 </CardContent>
               </Card>
@@ -221,16 +261,12 @@ export function HomePage() {
           </div>
 
           <div className="text-center">
-            <Button size="lg" variant="ghost" className="text-primary font-bold hover:bg-primary/5 px-10 h-14 rounded-xl gap-2">
-              Browse All Jobs <ArrowRight className="h-5 w-5" />
+            <Button size="lg" variant="ghost" className="text-primary font-bold hover:bg-primary/5 px-10 h-14 rounded-xl gap-2" asChild>
+              <Link to="/jobs">Browse All Jobs <ArrowRight className="h-5 w-5" /></Link>
             </Button>
           </div>
         </div>
       </section>
     </div>
   )
-}
-
-function cn(...classes: any[]) {
-  return classes.filter(Boolean).join(' ')
 }

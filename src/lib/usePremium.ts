@@ -29,18 +29,23 @@ export function usePremium(): PremiumState {
     let cancelled = false
 
     async function check() {
-      const { data: { user } } = await supabase.auth.getUser()
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
 
-      if (!user) {
+        if (!user) {
+          if (!cancelled) setLoading(false)
+          return
+        }
+
+        const { data, error } = await supabase.rpc('is_premium', { user_id: user.id })
+
+        if (!cancelled) {
+          if (!error) setIsPremium(!!data)
+          setLoading(false)
+        }
+      } catch {
+        // Unconfigured/unreachable Supabase: fail closed to Free, never crash.
         if (!cancelled) setLoading(false)
-        return
-      }
-
-      const { data, error } = await supabase.rpc('is_premium', { user_id: user.id })
-
-      if (!cancelled) {
-        if (!error) setIsPremium(!!data)
-        setLoading(false)
       }
     }
 
@@ -60,7 +65,12 @@ export function usePremium(): PremiumState {
 
   const requirePremium = () => {
     if (!isPremium) {
-      throw new Error('This feature requires a Premium subscription. Upgrade your plan to unlock it.')
+      // Callers catch this and render <UpgradePrompt /> (which links to
+      // /pricing). The message carries the path so even a bare toast points
+      // the user at the right place.
+      throw new Error(
+        'This feature requires a Premium subscription. See /pricing to upgrade.'
+      )
     }
   }
 

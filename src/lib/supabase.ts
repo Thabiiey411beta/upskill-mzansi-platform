@@ -6,16 +6,30 @@ import type { BusinessProfile } from '@/types'
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
-if (!supabaseUrl || !supabaseAnonKey) {
+/**
+ * True only when real Supabase credentials are present.
+ * The app must work (from local seed data) when this is false — see LAUNCH.md.
+ */
+export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey)
+
+if (!isSupabaseConfigured) {
   console.warn(
-    'Missing Supabase environment variables. Some features may not work.'
+    'Supabase is not configured (VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY missing). ' +
+      'Running in local mode: jobs and courses load from seed data, and any ' +
+      'Supabase-backed feature (auth, premium status, demo requests) degrades gracefully.'
   )
 }
 
-// Create the Supabase client
+// IMPORTANT: createClient() throws when the URL/key are empty strings, which
+// used to crash the entire app at import time whenever Supabase was
+// unconfigured. When unconfigured we pass obvious placeholder values instead:
+// the client is constructed fine, and every call simply fails at the network
+// layer, where existing error handling already catches it. These placeholders
+// are NOT real credentials and must never be replaced with real ones here —
+// real values belong in .env.local / Vercel env vars only.
 export const supabase = createClient<Database>(
-  supabaseUrl || '',
-  supabaseAnonKey || ''
+  supabaseUrl || 'https://unconfigured.supabase.co',
+  supabaseAnonKey || 'placeholder-anon-key-not-configured'
 )
 
 // Helper function to upload CV to Supabase Storage
