@@ -20,6 +20,20 @@ export const JobCard: React.FC<Props> = ({ job, onOpen }) => {
         </div>
       </div>
       <p className="mt-3 text-sm text-gray-700 line-clamp-3">{job.description}</p>
+      {job.sourceUrl && (
+        <p className="mt-2 text-xs text-muted-foreground">
+          Source:{' '}
+          <a
+            className="underline"
+            href={job.sourceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+          >
+            Careers24 ↗
+          </a>
+        </p>
+      )}
       <div className="mt-3 flex gap-2 flex-wrap">
         {job.tags.map((t) => (
           <span key={t} className="text-xs bg-muted px-2 py-1 rounded">{t}</span>

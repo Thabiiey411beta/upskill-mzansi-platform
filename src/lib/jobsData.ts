@@ -52,6 +52,10 @@ function mapDbJob(row: Record<string, unknown>): Job {
     responsibilities: [],
     benefits: [],
     tags: [],
+    sourceUrl:
+      typeof row.source_url === 'string' && row.source_url.length > 0
+        ? row.source_url
+        : undefined,
   }
 }
 

@@ -42,6 +42,9 @@ export interface Job {
   responsibilities: string[]
   benefits: string[]
   tags: string[]
+  /** Canonical URL of the original advert (e.g. a Careers24 advert).
+   *  Present only for scraped jobs — apply happens on the source site. */
+  sourceUrl?: string
 }
 
 export interface Application {

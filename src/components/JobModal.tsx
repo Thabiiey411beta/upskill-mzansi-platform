@@ -82,7 +82,17 @@ export const JobModal: React.FC<Props> = ({ job, onClose }) => {
               (Employer submission opens once accounts are live.)
             </p>
           )}
-          <div className="flex justify-end gap-3">
+          <div className="flex justify-end gap-3 flex-wrap">
+            {job.sourceUrl && (
+              <a
+                className="px-4 py-2 rounded border border-emerald-300 bg-emerald-50 text-emerald-800"
+                href={job.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Apply on Careers24 ↗
+              </a>
+            )}
             <button className="px-4 py-2 rounded border" onClick={onClose}>Close</button>
             <button className="px-4 py-2 rounded border" onClick={handleToggleSave}>{isJobSaved(job.id) || saved ? 'Unsave' : 'Save'}</button>
             <button className="px-4 py-2 rounded border border-amber-300 bg-amber-50 text-amber-800" onClick={() => setShowCoverLetter(true)}>
