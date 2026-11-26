@@ -1,5 +1,6 @@
 import React from 'react'
 import JobList from '../components/JobList'
+import { AdSlot } from '../components/AdSlot'
 
 const JobsPage = () => {
   return (
@@ -15,6 +16,9 @@ const JobsPage = () => {
         <div className="rounded-3xl border border-border bg-card p-6 shadow-sm">
           <JobList />
         </div>
+
+        {/* AdSense-ready slot — renders nothing until VITE_ADSENSE_CLIENT_ID is set (see ADSENSE.md). */}
+        <AdSlot />
       </div>
     </div>
   )

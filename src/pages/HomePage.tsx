@@ -6,6 +6,7 @@ import { Button, Card, CardContent, Input, Badge } from '@blinkdotnew/ui'
 import { cn } from '@/lib/utils'
 import { jobs } from '@/data/jobs'
 import { courses } from '@/data/courses'
+import { AdSlot } from '@/components/AdSlot'
 import { formatCurrencyZAR } from '@/lib/jobUtils'
 
 // NOTE — honest numbers only. This page used to show invented traction
@@ -267,6 +268,9 @@ export function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* AdSense-ready slot — renders nothing until VITE_ADSENSE_CLIENT_ID is set (see ADSENSE.md). */}
+      <AdSlot />
     </div>
   )
 }

@@ -1,0 +1,7 @@
+# robots.txt — Upskill Mzansi
+# TODO: replace REPLACE-WITH-VERCEL-URL with the real deployed URL
+# (VITE_SITE_URL) once the Vercel deploy exists, e.g.
+# Sitemap: https://upskill-mzansi.vercel.app/sitemap.xml
+User-agent: *
+Allow: /
+Sitemap: https://REPLACE-WITH-VERCEL-URL/sitemap.xml
