@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- sitemap.xml — Upskill Mzansi
-     TODO: replace REPLACE-WITH-VERCEL-URL with the real deployed URL
-     (VITE_SITE_URL) once the Vercel deploy exists. Only real routes from
-     src/App.tsx are listed; the catch-all (*) redirect is not a page. -->
+     Only real routes from src/App.tsx are listed; the catch-all (*)
+     redirect is not a page. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://REPLACE-WITH-VERCEL-URL/</loc><lastmod>2026-11-26</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://REPLACE-WITH-VERCEL-URL/jobs</loc><lastmod>2026-11-26</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>
-  <url><loc>https://REPLACE-WITH-VERCEL-URL/upskilling</loc><lastmod>2026-11-26</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://REPLACE-WITH-VERCEL-URL/pricing</loc><lastmod>2026-11-26</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://REPLACE-WITH-VERCEL-URL/business</loc><lastmod>2026-11-26</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://REPLACE-WITH-VERCEL-URL/profile</loc><lastmod>2026-11-26</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://REPLACE-WITH-VERCEL-URL/applications</loc><lastmod>2026-11-26</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://REPLACE-WITH-VERCEL-URL/saved</loc><lastmod>2026-11-26</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://upskill-mzansi-platform.vercel.app/</loc><lastmod>2026-11-26</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://upskill-mzansi-platform.vercel.app/jobs</loc><lastmod>2026-11-26</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <url><loc>https://upskill-mzansi-platform.vercel.app/upskilling</loc><lastmod>2026-11-26</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://upskill-mzansi-platform.vercel.app/pricing</loc><lastmod>2026-11-26</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://upskill-mzansi-platform.vercel.app/business</loc><lastmod>2026-11-26</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://upskill-mzansi-platform.vercel.app/profile</loc><lastmod>2026-11-26</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://upskill-mzansi-platform.vercel.app/applications</loc><lastmod>2026-11-26</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://upskill-mzansi-platform.vercel.app/saved</loc><lastmod>2026-11-26</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
 </urlset>
