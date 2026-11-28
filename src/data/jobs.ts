@@ -66,6 +66,7 @@ export const jobs: Job[] = [
     tags: ['Data', 'Audit', 'Careers24'],
     sourceUrl: 'https://www.careers24.com/jobs/adverts/2400620-data-analyst-audit-focus-pretoria/',
   },
+  {
     id: 'job-032',
     title: 'Data Analyst',
     company: 'Pronto Labour Team',
@@ -89,6 +90,7 @@ export const jobs: Job[] = [
     tags: ['Data', 'Analytics', 'Careers24'],
     sourceUrl: 'https://www.careers24.com/jobs/adverts/2393350-data-analyst-pretoria/',
   },
+  {
     id: 'job-033',
     title: 'Power BI / Microsoft Fabric Specialist (Senior)',
     company: 'Fidelity Services Group',
@@ -112,6 +114,7 @@ export const jobs: Job[] = [
     tags: ['Power BI', 'Analytics', 'Careers24'],
     sourceUrl: 'https://www.careers24.com/jobs/adverts/2401440-power-bi-microsoft-fabric-specialist-senior-roodepoort/',
   },
+  {
     id: 'job-034',
     title: 'Data Analyst (Junior to Intermediate - Process Engineering Focus)',
     company: 'Goldman Tech Resourcing',
@@ -135,6 +138,7 @@ export const jobs: Job[] = [
     tags: ['Data', 'Analytics', 'Careers24'],
     sourceUrl: 'https://www.careers24.com/jobs/adverts/2397033-data-analyst-junior-to-intermediate-process-engineering-focus-midrand/',
   },
+  {
     id: 'job-035',
     title: 'Data Analyst Lead',
     company: 'iqbusiness South Africa',
@@ -158,6 +162,7 @@ export const jobs: Job[] = [
     tags: ['Data', 'Leadership', 'Careers24'],
     sourceUrl: 'https://www.careers24.com/now-hiring/5075-iqbusiness-south-africa/jobs/adverts/2396950-data-analyst-lead-johannesburg/',
   },
+  {
     id: 'job-036',
     title: 'Data Analyst / Workshop Planner',
     company: 'Humanatics (Pty) Ltd',
@@ -181,6 +186,7 @@ export const jobs: Job[] = [
     tags: ['Data', 'Planning', 'Careers24'],
     sourceUrl: 'https://www.careers24.com/jobs/adverts/2394136-data-analyst-workshop-planner-johannesburg-south/',
   },
+  {
     id: 'job-045',
     title: 'Store Manager (Mimosa)',
     company: 'Toys R Us and Babies R Us South Africa',
@@ -204,6 +210,7 @@ export const jobs: Job[] = [
     tags: ['Retail', 'Management', 'Careers24'],
     sourceUrl: 'https://www.careers24.com/jobs/adverts/2401398-store-manager-mimosa-bloemfontein/',
   },
+  {
     id: 'job-048',
     title: 'General Worker',
     company: 'SAFLog',
@@ -227,6 +234,7 @@ export const jobs: Job[] = [
     tags: ['Operations', 'Support', 'Careers24'],
     sourceUrl: 'https://www.careers24.com/jobs/adverts/2400987-general-worker-mpumalanga/',
   },
+  {
     id: 'job-049',
     title: 'Retail Store Manager',
     company: 'Evolution Recruitment',
@@ -250,6 +258,7 @@ export const jobs: Job[] = [
     tags: ['Retail', 'Management', 'Careers24'],
     sourceUrl: 'https://www.careers24.com/jobs/adverts/2399529-retail-store-manager-free-state/',
   },
+  {
     id: 'job-050',
     title: 'JNR Electrician - FMCG Industry Experience',
     company: 'Pronto Labour Team',
@@ -273,6 +282,7 @@ export const jobs: Job[] = [
     tags: ['Engineering', 'Electrician', 'Careers24'],
     sourceUrl: 'https://www.careers24.com/jobs/adverts/2398292-jnr-electrician-fmcg-industry-experience-durban/',
   },
+  {
     id: 'job-051',
     title: 'AI Analytics Internal Auditor',
     company: 'Goldman Tech Resourcing',
@@ -296,6 +306,7 @@ export const jobs: Job[] = [
     tags: ['Finance', 'Audit', 'Careers24'],
     sourceUrl: 'https://www.careers24.com/jobs/adverts/2397039-ai-analytics-internal-auditor-johannesburg/',
   },
+  {
     id: 'job-053',
     title: 'AI Internal Auditor',
     company: 'Tumaini Consulting',
@@ -319,6 +330,7 @@ export const jobs: Job[] = [
     tags: ['Finance', 'Audit', 'Careers24'],
     sourceUrl: 'https://www.careers24.com/jobs/adverts/2396644-ai-internal-auditor-johannesburg/',
   },
+  {
     id: 'job-055',
     title: 'AI Analytics Internal Auditor',
     company: 'Goldman Tech Resourcing',
@@ -342,6 +354,7 @@ export const jobs: Job[] = [
     tags: ['Finance', 'Audit', 'Careers24'],
     sourceUrl: 'https://www.careers24.com/jobs/adverts/2395815-ai-analytics-internal-auditor-gauteng/',
   },
+  {
     id: 'job-056',
     title: 'Field Service Technician',
     company: 'Chainlink Recruitment',
@@ -365,6 +378,7 @@ export const jobs: Job[] = [
     tags: ['Engineering', 'Technician', 'Careers24'],
     sourceUrl: 'https://www.careers24.com/jobs/adverts/2395278-field-service-technician-middelburg/',
   },
+  {
     id: 'job-057',
     title: 'Locum - Registered Nurse',
     company: 'Faircape',
@@ -388,6 +402,7 @@ export const jobs: Job[] = [
     tags: ['Healthcare', 'Nursing', 'Careers24'],
     sourceUrl: 'https://www.careers24.com/jobs/adverts/2394160-locum-registered-nurse-western-cape/',
   },
+  {
     id: 'job-059',
     title: 'Production Manager',
     company: 'Dynamic Outsourced Solutions Pty. Ltd',
@@ -411,6 +426,7 @@ export const jobs: Job[] = [
     tags: ['Manufacturing', 'Production', 'Careers24'],
     sourceUrl: 'https://www.careers24.com/jobs/adverts/2391191-production-manager-modimolle/',
   },
+  {
     id: 'job-060',
     title: 'Clinical Facilitator',
     company: 'MSP Staffing (PTY) LTD',
