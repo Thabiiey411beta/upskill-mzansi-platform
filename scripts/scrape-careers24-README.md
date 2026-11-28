@@ -86,7 +86,28 @@ still needs a human to run it in the Supabase SQL Editor, so schedule
 Mode B runs only when someone is around to apply the SQL, or add the
 service-role key to switch to Mode A.
 
-## What changed for `source_url` support
+## Link rot — re-verify stored apply links every run (28 Nov 2026 lesson)
+
+Careers24 reuses advert IDs: an advert URL that was correct on scrape day
+can later open a COMPLETELY DIFFERENT job, or redirect to a 0-result
+search page when the advert expires. Checked 28 Nov 2026: of 30 stored
+links, 18 matched, 6 opened a different job, 6 had expired — only 60%
+were still right after 1–2 days. Never trust a stored `source_url`
+without re-checking it.
+
+Every daily run must, BEFORE inserting new jobs:
+1. Re-open every active job's `source_url` in the cloud browser and
+   compare the title/employer shown with the stored title/company.
+2. Deactivate (`is_active = false`, never delete) any row whose link now
+   shows a different job, redirects to a 0-result search, or is blocked —
+   and remove the same job from `src/data/jobs.ts` so the fallback stays
+   in sync.
+3. Only then insert the new jobs. A job with no verified apply link does
+   not go live: curated/no-source jobs are not listed at all.
+
+The 28 Nov cleanup deactivated 13 bad Careers24 jobs + all 30 curated
+no-source jobs, leaving 17 verified jobs live. The daily scraper refills
+the site with fresh verified jobs (~15/day).
 
 - `supabase/migrations/20261126_add_job_source_url.sql` — adds the column.
 - `src/types.ts` — `Job.sourceUrl?: string`.
